@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>逆轉辯護人：雨夜雜貨店案 · DSE 中文寫作思維工作台</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #0b1120;
+    }
+    .font-serif-tc {
+      font-family: 'Noto Serif TC', serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.7);
+      border-radius: 9999px;
+    }
+    .highlight-env { background-color: rgba(56, 189, 248, 0.2); border-left: 3px solid #38bdf8; }
+    .highlight-action { background-color: rgba(251, 191, 36, 0.2); border-left: 3px solid #fbbf24; }
+    .highlight-symbol { background-color: rgba(244, 63, 94, 0.2); border-left: 3px solid #f43f5e; }
+    .highlight-inner { background-color: rgba(168, 85, 247, 0.2); border-left: 3px solid #a855f7; }
+    .highlight-ending { background-color: rgba(52, 211, 153, 0.2); border-left: 3px solid #34d399; }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(0.99); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- 頂部命運天平 & 審判狀態列 -->
+  <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur sticky top-0 z-30 px-3 sm:px-6 py-2.5">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+      
+      <!-- 標題與案件資訊 -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-serif-tc text-lg font-bold shadow-inner">
+          ⚖️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-serif-tc font-bold text-slate-100 text-sm sm:text-base tracking-wide">
+              雨夜雜貨店「偷竊弒親」案 · 公設辯護席
+            </h1>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 font-mono">
+              誤殺及搶劫重罪
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400">被告：林浩 (18歲) ｜ 承審：公設辯護律師 ｜ DSE 中文寫作思維工作台</p>
+        </div>
+      </div>
+
+      <!-- 命運天平計量條 & 法槌警告數 -->
+      <div class="flex items-center gap-4 bg-slate-950/70 px-3 py-1.5 rounded-xl border border-slate-800">
+        <!-- 天平計量 -->
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-rose-400 font-medium text-[11px]">定罪</span>
+          <div class="w-24 sm:w-32 h-2.5 bg-slate-800 rounded-full overflow-hidden flex border border-slate-700">
+            <div id="meter-left" class="bg-rose-500 transition-all duration-500" style="width: 50%;"></div>
+            <div id="meter-right" class="bg-emerald-500 transition-all duration-500" style="width: 50%;"></div>
+          </div>
+          <span class="text-emerald-400 font-medium text-[11px]">無罪</span>
+          <span id="meter-text" class="font-bold text-amber-400 text-[11px] w-14 text-center">勢均力敵</span>
+        </div>
+
+        <!-- 法槌警告（扣滿3次入獄） -->
+        <div class="flex items-center gap-1 pl-2 border-l border-slate-800 text-xs">
+          <span class="text-slate-400 text-[11px]">法槌警告：</span>
+          <div class="flex gap-1" id="strike-container">
+            <span class="strike-icon text-slate-600 text-sm" data-idx="0">🔨</span>
+            <span class="strike-icon text-slate-600 text-sm" data-idx="1">🔨</span>
+            <span class="strike-icon text-slate-600 text-sm" data-idx="2">🔨</span>
+          </div>
+        </div>
+
+        <!-- 音效與重置按鍵 -->
+        <div class="flex items-center gap-1.5 pl-2 border-l border-slate-800">
+          <button id="sound-btn" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition" title="切換音效">
+            <span id="sound-icon">🔊</span>
+          </button>
+          <button id="restart-btn" class="px-2 py-1 rounded bg-slate-800 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 text-[11px] transition" title="重新開庭">
+            重置
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 庭審進度條導航 -->
+  <nav class="bg-slate-950/60 border-b border-slate-800/80 px-3 sm:px-6 py-1.5">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto custom-scroll text-xs" id="step-nav">
+      <!-- 由 JS 動態生成 5 幕步驟標籤 -->
+    </div>
+  </nav>
+
+  <!-- 主工作台：三欄式布局 (案卷櫃 3 / 法庭舞台 6 / 思維錦囊 3) -->
+  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+    <!-- 左側欄：案卷與物證櫃（初始全面鎖定，調查後動態解鎖） -->
+    <aside class="lg:col-span-3 bg-slate-900/70 border border-slate-800 rounded-2xl p-3.5 flex flex-col gap-3 shadow-lg h-fit max-h-[85vh] overflow-y-auto custom-scroll">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h2 class="font-serif-tc font-bold text-slate-200 text-sm flex items-center gap-1.5">
+          <span>📁 辯護律師案卷夾</span>
+        </h2>
+        <span id="evidence-count-badge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 border border-slate-700">
+          物證封存 0 / 4
+        </span>
+      </div>
+
+      <!-- 被告與案情背景 -->
+      <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800 text-xs space-y-1.5">
+        <div class="flex justify-between">
+          <span class="text-slate-400">事發時序：</span>
+          <span class="font-mono text-slate-200">案發當夜 23:15 (八號風球)</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">現場：</span>
+          <span class="text-slate-200">深水埗福榮街「林記雜貨」</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">指控罪名：</span>
+          <span class="text-rose-400 font-bold">持械傷人、搶劫現款</span>
+        </div>
+      </div>
+
+      <!-- 物證列表容器 -->
+      <div class="space-y-2">
+        <div class="text-[11px] font-bold text-slate-400 flex items-center justify-between">
+          <span>關鍵客觀物證</span>
+          <span class="text-[10px] text-slate-500">調查行動後解鎖</span>
+        </div>
+        <div id="evidence-list-container" class="space-y-2">
+          <!-- 初始鎖定卡片 -->
+        </div>
+      </div>
+
+      <!-- 學生收集到的寫作技法徽章 -->
+      <div class="mt-auto pt-3 border-t border-slate-800">
+        <div class="text-[11px] font-bold text-slate-400 mb-2 flex items-center justify-between">
+          <span>掌握之 DSE 寫作手法</span>
+          <span id="badge-count-text" class="text-amber-400 font-mono text-xs">0 / 5</span>
+        </div>
+        <div class="flex flex-wrap gap-1.5" id="badge-container">
+          <span class="text-[10px] bg-slate-950 text-slate-600 border border-slate-800 px-2 py-1 rounded-lg">尚待庭審驗證...</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- 中央核心區：法庭對決舞台與雙階段決策 (6/12 cols) -->
+    <section class="lg:col-span-6 flex flex-col gap-3">
+      
+      <!-- 法庭主視覺與發言框 -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col gap-4 relative overflow-hidden">
+        
+        <!-- 當前幕次標題 -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span id="stage-act-label" class="font-serif-tc font-bold text-amber-300 text-sm sm:text-base">
+              第一幕：開庭指控 · 破除環境偏見
+            </span>
+          </div>
+          <span id="stage-status-badge" class="text-[10px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+            控方舉證中
+          </span>
+        </div>
+
+        <!-- 舞台動態視覺展示區 -->
+        <div id="visual-content" class="min-h-[160px] sm:min-h-[190px] rounded-xl bg-slate-950/80 border border-slate-800/80 p-4 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-inner">
+          <!-- 由 JS 依劇情切換 -->
+        </div>
+
+        <!-- 角色對話與陳詞區 -->
+        <div class="bg-slate-950/90 rounded-xl p-3.5 border border-slate-800 flex flex-col gap-1.5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span id="speaker-name" class="font-serif-tc font-bold text-amber-400 text-xs sm:text-sm">檢控官 張大狀</span>
+              <span id="speaker-sub" class="text-[10px] text-slate-500 font-mono">控方發言</span>
+            </div>
+            <span class="text-[10px] text-slate-500">法庭速記實錄</span>
+          </div>
+          <p id="dialogue-text" class="text-slate-200 text-xs sm:text-sm leading-relaxed min-h-[50px] font-sans">
+            載入中...
+          </p>
+        </div>
+
+      </div>
+
+      <!-- 辯護操作控制台（策略盤 ➔ 發言選項） -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col gap-3">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+          <div class="text-xs font-bold text-slate-300 flex items-center gap-1.5" id="decision-guide-text">
+            <span>🎯 第一步：研判對方陳詞漏洞，選定辯護方針</span>
+          </div>
+          <span id="step-phase-badge" class="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full">
+            階段一：策略制定
+          </span>
+        </div>
+
+        <!-- 策略選擇輪盤 (4個按鈕) -->
+        <div id="strategy-hub" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <!-- 由 JS 動態生成 -->
+        </div>
+
+        <!-- 辯護發言卡片區（選完策略後動態顯示，外觀完全中立，無任何劇透標籤） -->
+        <div id="defense-cards-container" class="hidden flex flex-col gap-2.5">
+          <!-- 由 JS 動態生成 -->
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 右側欄：DSE 評卷員思維錦囊 & 即時表達診斷 (3/12 cols) -->
+    <aside class="lg:col-span-3 bg-slate-900/70 border border-slate-800 rounded-2xl p-3.5 flex flex-col gap-3 shadow-lg h-fit max-h-[85vh] overflow-y-auto custom-scroll">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h2 class="font-serif-tc font-bold text-amber-400 text-sm flex items-center gap-1.5">
+          <span>⚖️ 閱卷員思維診斷</span>
+        </h2>
+        <span id="eval-grade-tag" class="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded">
+          審查中
+        </span>
+      </div>
+
+      <!-- 即時名師點評框 -->
+      <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 text-xs space-y-1.5 shadow-sm">
+        <div class="flex items-center gap-1 text-slate-400 font-bold text-[11px]">
+          <span>👨‍🏫 診斷反饋：</span>
+        </div>
+        <p id="examiner-comment" class="text-slate-300 text-xs leading-relaxed">
+          控方正以嚴厲罪名向少年施壓。切忌單純喊冤或空泛求情，請在現場環境與客觀物理痕跡中尋找致命反差！
+        </p>
+      </div>
+
+      <!-- DSE 三大表達維度指標 -->
+      <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-3 space-y-2.5 text-xs">
+        <div class="text-[11px] font-bold text-slate-400">寫作能力指標評估</div>
+        
+        <div>
+          <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+            <span>取材立意（客觀物象依託）</span>
+            <span id="score-material" class="font-mono text-amber-400">30%</span>
+          </div>
+          <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="bar-material" class="bg-amber-400 h-full transition-all duration-500" style="width: 30%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+            <span>肖像微動作（Show, don't tell）</span>
+            <span id="score-action" class="font-mono text-amber-400">20%</span>
+          </div>
+          <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="bar-action" class="bg-amber-400 h-full transition-all duration-500" style="width: 20%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+            <span>意象寄情（言外之意與昇華）</span>
+            <span id="score-symbol" class="font-mono text-amber-400">10%</span>
+          </div>
+          <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="bar-symbol" class="bg-amber-400 h-full transition-all duration-500" style="width: 10%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 採集到的高分文案碎片 -->
+      <div class="space-y-1.5 flex-1">
+        <div class="text-[11px] font-bold text-slate-400">採集到的精準答辯文句</div>
+        <div id="collected-snippets" class="space-y-1.5 text-[11px]">
+          <div class="text-slate-600 italic p-3 bg-slate-950/40 rounded-xl border border-dashed border-slate-800 text-center">
+            尚待在庭審中精準破案...
+          </div>
+        </div>
+      </div>
+
+      <!-- 範文鎖定警示（未通關嚴禁預覽） -->
+      <div id="article-lock-hint" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-500 text-center font-medium">
+        🔒 完整 5** 篇章將在全案無罪開釋時解鎖
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- 全局對話框 / 案卷詳情彈窗 -->
+  <div id="evidence-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 max-w-lg w-full rounded-2xl shadow-2xl p-5 flex flex-col gap-4 max-h-[85vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 id="modal-title" class="font-serif-tc font-bold text-slate-100 text-base">物證檢驗</h3>
+        <button id="modal-close-btn" class="text-slate-400 hover:text-slate-200 text-lg transition">✕</button>
+      </div>
+      <div id="modal-content" class="text-slate-300 text-xs sm:text-sm leading-relaxed space-y-3 font-sans">
+        <!-- 內容動態注入 -->
+      </div>
+      <div class="flex justify-end pt-2 border-t border-slate-800">
+        <button id="modal-confirm-btn" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl transition shadow">
+          確認
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 範文解鎖終局彈窗（只有全案無罪時才能觸發查看） -->
+  <div id="article-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden">
+    <div class="bg-slate-900 border border-amber-500/40 max-w-3xl w-full rounded-2xl shadow-2xl p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh]">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📜</span>
+          <div>
+            <h3 class="font-serif-tc font-bold text-amber-300 text-base sm:text-lg">
+              逆轉大勝！DSE 卷二 5** 滿分篇章已組裝完成
+            </h3>
+            <p class="text-[11px] text-slate-400">篇名：《雨歇深水埗，重門初開時》</p>
+          </div>
+        </div>
+        <button id="article-close-btn" class="text-slate-400 hover:text-slate-200 text-xl transition">✕</button>
+      </div>
+
+      <!-- 技法標註開關 -->
+      <div class="flex flex-wrap items-center gap-2 p-2.5 bg-slate-950/60 rounded-xl border border-slate-800 text-xs">
+        <span class="text-slate-400 font-bold text-[11px]">技法高亮：</span>
+        <label class="flex items-center gap-1 cursor-pointer text-sky-300">
+          <input type="checkbox" id="toggle-env" checked class="rounded accent-sky-500">
+          <span>環境精準</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-amber-300">
+          <input type="checkbox" id="toggle-action" checked class="rounded accent-amber-500">
+          <span>微動作特寫</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-rose-300">
+          <input type="checkbox" id="toggle-symbol" checked class="rounded accent-rose-500">
+          <span>物證意象</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-purple-300">
+          <input type="checkbox" id="toggle-inner" checked class="rounded accent-purple-500">
+          <span>天平心理</span>
+        </label>
+        <label class="flex items-center gap-1 cursor-pointer text-emerald-300">
+          <input type="checkbox" id="toggle-ending" checked class="rounded accent-emerald-500">
+          <span>多感官以景作結</span>
+        </label>
+      </div>
+
+      <!-- 範文全文內容 -->
+      <div id="assembled-article-body" class="flex-1 overflow-y-auto custom-scroll bg-slate-950/90 rounded-xl p-4 sm:p-5 border border-slate-800 text-xs sm:text-sm leading-relaxed space-y-3 font-serif-tc text-slate-200">
+        <!-- 內容由 JS 拼合渲染 -->
+      </div>
+
+      <!-- 底部操作按鈕 -->
+      <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+        <span id="copy-status" class="text-emerald-400 text-xs opacity-0 transition-opacity">已成功複製全文至剪貼簿！</span>
+        <div class="flex gap-2">
+          <button id="copy-article-btn" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition">
+            複製全文
+          </button>
+          <button id="close-modal-footer-btn" class="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition">
+            完成檢閱
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 原生 JavaScript 邏輯引擎（無任何外部框架依賴） -->
+  <script>
+    // 關鍵物證庫資料（初始全部封存，必須透過相應調查策略解鎖）
+    const EVIDENCE_DATABASE = {
+      scene_ladder: {
+        id: "scene_ladder",
+        icon: "🪜",
+        name: "物證 01 · 現場凹陷地磚與鋁梯折痕照片",
+        shortDesc: "折疊梯橫檔卡入磚縫下陷，有抹布防漏痕跡",
+        detailHtml: `
+          <div class="space-y-2">
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-4xl">🪜</div>
+            <p><strong>勘驗紀錄：</strong>雜貨店中央地面常年潮濕，鋪設老式暗花防滑地磚。在老人倒臥處旁倒著一把雙階鋁合金梯，梯腳牢牢卡在凹陷的地磚破口中，第二根橫檔明顯彎折下陷。旁邊散落著破抹布與空水桶，證明案發前有人正爬高防漏，而非與人搏鬥。</p>
+          </div>
+        `
+      },
+      scene_window: {
+        id: "scene_window",
+        icon: "🪟",
+        name: "物證 02 · 高處斷裂鐵皮氣窗與地面痕跡紀錄",
+        shortDesc: "兩米高氣窗因強風鉸斷，地面無第二人外來泥濘鞋印",
+        detailHtml: `
+          <div class="space-y-2">
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-4xl">💨</div>
+            <p><strong>痕跡報告：</strong>兩米高氣窗絞鏈因八號風球狂風徹底拉脫，暴雨直灌。地面除了老人自己的防滑膠鞋印與自上而下的垂直滴血痕跡，通往櫃檯處根本沒有第二個人的外來泥濘鞋印。</p>
+          </div>
+        `
+      },
+      witness_micro: {
+        id: "witness_micro",
+        icon: "👓",
+        name: "物證 03 · 證人陳先生 神態生理微反應筆記",
+        shortDesc: "右手指節攥緊褲縫發抖、喉結劇烈吞嚥、眼神向右上飄移",
+        detailHtml: `
+          <div class="space-y-2">
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-4xl">🔍</div>
+            <p><strong>微反應剖析：</strong>證人在陳述『親眼目擊』時肢體極度僵硬，視線頻繁躲避法官游移向右上角，喉結兩次劇烈吞嚥，右手死死攥緊褲縫。典型生理緊張與偏見先行的作偽特徵。</p>
+          </div>
+        `
+      },
+      calendar_notes: {
+        id: "calendar_notes",
+        icon: "📅",
+        name: "物證 04 · 泛黃舊日曆紙背面手賬與紅圈",
+        shortDesc: "紅鉛筆手賬記錄雜貨進出，角落紅圓圈標註『阿浩今日返屋企』",
+        detailHtml: `
+          <div class="space-y-2">
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center text-4xl">📝</div>
+            <p><strong>原件特寫：</strong>這張從舊日曆上撕下來的厚紙邊角磨毛，背面用紅木工鉛筆記著柴米油鹽的碎賬。而在案發當天的日曆角上，畫著一個粗重的紅圓圈，旁邊顫巍巍寫著：『阿浩今日返屋企』。無任何撕扯搶奪痕跡，證明現鈔早在案發前便整齊備好。</p>
+          </div>
+        `
+      }
+    };
+
+    // 五幕核心關卡資料庫
+    const SCENARIOS = [
+      // 第一幕
+      {
+        act: 1,
+        title: "第一幕：開庭指控 · 破除環境偏見",
+        shortTitle: "環境精準破局",
+        speaker: "檢控官 張大狀",
+        speakerSub: "控方開庭指控",
+        dialogue: "法官大人、各位陪審員。案發當晚八號風球高懸，這間位於深水埗唐樓地下的老舊雜貨店內，被告林浩趁深夜暴雨潛入，持械襲擊行動不便的祖父，洗劫櫃檯兩萬四千元。這是一場蓄謀已久的弒親搶劫！",
+        visualType: "court_prosecutor",
+        strategies: [
+          { id: "s1_inspect", icon: "🔍", title: "調取現場勘驗物理痕跡照片", desc: "調閱深水埗雜貨店地磚、梯子與氣窗的客觀物證" },
+          { id: "s1_dialogue", icon: "🧠", title: "調閱看守所阿浩筆錄", desc: "查閱少年對案發當晚現場混亂狀況的供述" },
+          { id: "s1_plead", icon: "🕊️", title: "基於年齡與家庭背景求情", desc: "懇請法官念及被告年少且自幼家境貧困從輕考量" },
+          { id: "s1_rebut", icon: "⚖️", title: "就天氣條件質疑作案可能", desc: "主張八號風球深夜暴雨漆黑不可能蓄意作案" }
+        ],
+        outcomes: {
+          s1_plead: {
+            isSuccess: false,
+            scoreDelta: -15,
+            addStrike: 1,
+            examiner: "【抗辯無效 · 不入品】法庭是講求客觀證據之所，非感性宣洩之地。空泛求情毫無依據，反被控方質疑為自認有罪！必須重整策略！",
+            responseSpeaker: "法官 大人",
+            responseText: "抗辯無效！辯方律師，法庭看重的是客觀實證，空泛求情無助於澄清事實。請立即更換合適的辯護方針！",
+            options: [
+              {
+                id: "s1_opt_plead",
+                text: "法官大人，林浩本質不壞，自幼與祖父相依為命，絕無弒親搶劫之狠心，請法庭念及他年僅十八歲，給予悔改機會！",
+                delta: -20,
+                strike: 1,
+                feedback: "法官敲槌斥責！控方當庭指出辯方自失立場，答辯失敗，無法推進！"
+              }
+            ]
+          },
+          s1_rebut: {
+            isSuccess: false,
+            scoreDelta: -10,
+            addStrike: 1,
+            examiner: "【抗辯無效 · 缺乏論據】天黑暴雨反而給了犯罪最好的遮掩！這種空洞的斷言只會讓陪審團認為辯方理屈詞窮。",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "天黑狂風難道不正是入室劫掠最好的天然屏障嗎？辯方律師這番發言毫無事實支撐，純屬無端臆測！",
+            options: [
+              {
+                id: "s1_opt_rebut",
+                text: "案發深夜暴雨傾盆，店內漆黑一片，在如此惡劣混亂的環境下，林浩根本不可能看清店內格局並蓄意襲擊！",
+                delta: -15,
+                strike: 1,
+                feedback: "檢控官當庭駁斥，法官判定反駁缺乏客觀依據，無法採信。"
+              }
+            ]
+          },
+          s1_dialogue: {
+            isSuccess: false,
+            scoreDelta: 0,
+            addStrike: 0,
+            examiner: "【說服力不足 · 達意未足】文字只是平淡轉述了店鋪漏水與摔倒，未能指出足以排除『搶劫搏鬥』的關鍵物理痕跡，無法推翻控方定性。",
+            responseSpeaker: "法官 大人",
+            responseText: "辯方所陳述的店鋪混亂狀況，無法排除是打鬥洗劫所致。若無更具說服力的客觀物理反證，本席無法採納意外之說。",
+            options: [
+              {
+                id: "s1_opt_dialogue",
+                text: "阿浩供稱當晚屋頂漏水嚴重，地上滿是積水，貨架倒塌，電燈早已失靈。現場極度混亂，祖父是在黑暗中攀爬失足跌傷，純屬意外。",
+                delta: 0,
+                strike: 0,
+                feedback: "法官認為證據鏈不足以排除疑點，答辯未獲准通過，必須重新出示具體痕跡證據。"
+              }
+            ]
+          },
+          s1_inspect: {
+            isSuccess: true,
+            unlockEvidence: ["scene_ladder", "scene_window"],
+            scoreDelta: 30,
+            addStrike: 0,
+            examiner: "【抗辯成立 · 豐富級 ★★★】精準至極！精準捕捉常人忽略的『折疊鋁梯扭曲卡陷』與『地面無第二人外來泥濘鞋印』，以無可辯駁的客觀物理事實粉碎了入室搶劫假說！",
+            responseSpeaker: "法官 大人",
+            responseText: "辯方所呈交的折疊鋁梯變形與氣窗拉脫痕跡極具客觀價值，現場地面確實缺乏外來鞋印支持搏鬥。本庭採納辯方質疑，推翻蓄意持械搶劫之假設！",
+            options: [
+              {
+                id: "s1_opt_master",
+                text: "請法庭所有人審視現場勘驗照片中被所有人忽略的致命細節：在祖父倒地的正上方，兩米高直通天花的鐵皮氣窗被八號強風徹底鉸斷，暴雨筆直灌入；老人倒臥的右手旁，倒著一把鋁合金折疊梯，梯腳卡在凹陷濕滑的地磚縫隙中，橫檔明顯扭曲下陷！更重要的是，在通往櫃檯的積水地面上，除了老人自己的防滑膠鞋印與自上而下的垂直滴血痕跡，根本沒有任何第二個人踩著泥濘奔向櫃檯的外來腳印！一個行動不便的老人冒險登高防漏失衡下墜，這不是屠場，這是一場被風雨撕裂的意外！",
+                delta: 30,
+                strike: 0,
+                badge: "精準客觀洞察",
+                feedback: "全場寂靜！控方證據鏈被物理痕跡正面擊穿，第一幕抗辯成功成立！"
+              }
+            ]
+          }
+        }
+      },
+
+      // 第二幕
+      {
+        act: 2,
+        title: "第二幕：盤問證人 · 撕開偏見面具",
+        shortTitle: "神態微動作特寫",
+        speaker: "證人 陳先生 (隔壁五金店老闆)",
+        speakerSub: "聲稱隔著毛玻璃親眼目擊",
+        dialogue: "我當晚十點半從騎樓經過，隔著雜貨店那扇毛玻璃，親眼看見林浩這小子揚起手，把老頭重重推倒在地！這小子平時就偷雞摸狗，我看他就是賊性難改！",
+        visualType: "court_witness",
+        strategies: [
+          { id: "s2_question_glass", icon: "🔍", title: "從光學能見度深入盤問", desc: "質疑風雨夜、老花鏡及油膩毛玻璃之辨識極限" },
+          { id: "s2_rebut_direct", icon: "⚖️", title: "指控證人公報私仇作偽證", desc: "當庭質疑陳先生與林家素有過節，證供出於私怨" },
+          { id: "s2_plead", icon: "🕊️", title: "陳述被告平日之品行", desc: "傳召街坊指證林浩本質善良，絕無弒親可能" },
+          { id: "s2_recess", icon: "⏳", title: "申請休庭調閱證人通聯記錄", desc: "請求法庭延後盤問以查證當晚行蹤" }
+        ],
+        outcomes: {
+          s2_rebut_direct: {
+            isSuccess: false,
+            scoreDelta: -15,
+            addStrike: 1,
+            examiner: "【抗辯無效 · 藐視法庭】無實據指控證人品格，只會引起陪審團反感與法官警戒，無法推進案情！",
+            responseSpeaker: "法官 大人",
+            responseText: "反對成立！辯方律師無憑無據恐嚇證人，本席予以嚴厲警告！請回歸客觀物證與視線條件進行質詢！",
+            options: [
+              {
+                id: "s2_opt_rebut",
+                text: "陳先生你根本在借題發揮！兩家平日積怨甚深，你分明是在捏造事實誣陷被告！",
+                delta: -20,
+                strike: 1,
+                feedback: "法官敲槌警告，指控無效，嚴禁推進。"
+              }
+            ]
+          },
+          s2_plead: {
+            isSuccess: false,
+            scoreDelta: -10,
+            addStrike: 0,
+            examiner: "【說服力不足】主觀品行不能推翻目擊證詞，無法撼動指控，請針對證詞本身的破綻開刀。",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "所謂本性善良在客觀目擊證言面前毫無意義，請辯方停止離題！",
+            options: [
+              {
+                id: "s2_opt_plead",
+                text: "林浩平日雖然輟學，但對祖父素有孝心，街坊鄰里皆可作證，怎可能如證人所言蓄意傷人？",
+                delta: -10,
+                strike: 0,
+                feedback: "法官裁定品格辯詞無助於推翻目擊事實，質詢無效。"
+              }
+            ]
+          },
+          s2_recess: {
+            isSuccess: false,
+            scoreDelta: 0,
+            addStrike: 0,
+            examiner: "【程序延宕】程序性推脫無法解決實質矛盾，法庭拒絕無端延期。",
+            responseSpeaker: "法官 大人",
+            responseText: "休庭申請理由不充分，予以駁回！請辯方律師立刻針對證人陳述進行實質抗辯。",
+            options: [
+              {
+                id: "s2_opt_recess",
+                text: "辯方懇請法庭暫時休庭，待查明證人當晚是否有飲酒或受其他干擾後再行質證。",
+                delta: 0,
+                strike: 0,
+                feedback: "法官駁回延期，要求當庭拿出論證。"
+              }
+            ]
+          },
+          s2_question_glass: {
+            isSuccess: true,
+            unlockEvidence: ["witness_micro"],
+            scoreDelta: 20,
+            addStrike: 0,
+            examiner: "【破綻浮現！】抓住光學能見度令證人神情慌亂！請立即進入『證人特寫觀察』，點擊找出他身上的 3 處微反應破綻以徹底瓦解偽證！",
+            responseSpeaker: "證人 陳先生",
+            responseText: "我……我天天看著這小子長大！就算隔著毛玻璃看不太清正臉，看他的身形輪廓我也絕不可能認錯！不是他還能是誰？！",
+            triggerInteractiveInspection: true,
+            options: []
+          }
+        }
+      },
+
+      // 第三幕
+      {
+        act: 3,
+        title: "第三幕：物證交鋒 · 泛黃日曆紙的密碼",
+        shortTitle: "核心意象賦魂",
+        speaker: "檢控官 張大狀",
+        speakerSub: "出示查扣之現款",
+        dialogue: "這是警方在林浩背包裡當場繳獲的兩萬四千元現金，沾著鮮血。一個無業青年深夜帶著這筆巨款奪門而逃，這不是盜竊分贓的鐵證是什麼？！",
+        visualType: "court_evidence_cash",
+        strategies: [
+          { id: "s3_inspect_paper", icon: "🔍", title: "申請親手勘驗鈔票與包裝紙", desc: "仔細檢視面額構成、磨損痕跡及包裹日曆紙背面字跡" },
+          { id: "s3_fabricate", icon: "⚖️", title: "聲稱是林浩個人打工之儲蓄", desc: "辯明該款項系被告平日兼職所得" },
+          { id: "s3_doctor", icon: "👨‍⚕️", title: "傳召主治醫生說明傷勢", desc: "請求法庭延後待受害者甦醒親自作供" },
+          { id: "s3_plead", icon: "🕊️", title: "質疑若為搶劫為何不帶同夥", desc: "從犯案常理提出合理懷疑" }
+        ],
+        outcomes: {
+          s3_fabricate: {
+            isSuccess: false,
+            scoreDelta: -25,
+            addStrike: 2,
+            examiner: "【致命虛偽陳述】當庭捏造不符合常理的事實！檢方當場出示銀行結餘與稅務記錄，直接戳穿謊言，幾乎導致全案崩潰！",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "被告銀行賬戶連續兩年結餘為負，且無任何合法報稅記錄！辯方當庭作偽，分明做賊心虛！",
+            options: [
+              {
+                id: "s3_opt_fab",
+                text: "這筆錢系被告林浩平日打散工辛苦攢下的儲蓄，血跡僅為扶起老人時不慎沾染，檢方不能僅憑持有現金便指控盜竊！",
+                delta: -25,
+                strike: 2,
+                feedback: "法官重敲法槌給予嚴重警告！辯護信譽跌入冰點，抗辯無效！"
+              }
+            ]
+          },
+          s3_doctor: {
+            isSuccess: false,
+            scoreDelta: 0,
+            addStrike: 0,
+            examiner: "【無法解除危機】受害者仍處深度昏迷，消極等待無法化解眼前沾血現鈔的致命指控。",
+            responseSpeaker: "法官 大人",
+            responseText: "醫療報告已確認林伯深度昏迷，本庭不能無休止等候。若無實物證據證明該款項性質，現有指控仍將成立。",
+            options: [
+              {
+                id: "s3_opt_doc",
+                text: "老人目前仍在深切治療部，辯方懇請法庭給予寬限，待老人恢復神智親口核實這筆錢的真正歸屬。",
+                delta: 0,
+                strike: 0,
+                feedback: "法官不予採納，要求針對物證本身提出抗辯。"
+              }
+            ]
+          },
+          s3_plead: {
+            isSuccess: false,
+            scoreDelta: -5,
+            addStrike: 0,
+            examiner: "【說服力薄弱】常理推測不足以推翻贓款指控，必須從物證本身找出破綻。",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "單獨作案在入室搶劫中比比皆是，辯方這種空泛的推論根本不值一駁！",
+            options: [
+              {
+                id: "s3_opt_plead",
+                text: "林浩若真有預謀洗劫，何以身上未攜帶任何分贓行李或交通工具？這顯然與常理不符！",
+                delta: -5,
+                strike: 0,
+                feedback: "控方反駁成立，法官示意辯方不得僅憑揣測答辯。"
+              }
+            ]
+          },
+          s3_inspect_paper: {
+            isSuccess: true,
+            unlockEvidence: ["calendar_notes"],
+            scoreDelta: 35,
+            addStrike: 0,
+            examiner: "【意在言外 · 豐富級 ★★★】動人心魄！透過小額起毛零鈔、樟腦木頭氣味與老人紅鉛筆手賬上的『阿浩今日返屋企』，讓冰冷的物證轉化為父輩無聲的骨血之愛，震撼全場！",
+            responseSpeaker: "法官 大人",
+            responseText: "日曆紙背面手賬字跡與折痕完全吻合，證實該款項早於案發前即已被包裹備好。本庭正式排除『櫃檯搶劫贓款』之定性！",
+            options: [
+              {
+                id: "s3_opt_master",
+                text: "請全法庭仔細審視這疊被檢方稱為『贓款』的物證袋——這兩萬四千元中，沒有一張千元大鈔，全是磨得發毛、反覆撫平的十元、二十元與五十元零鈔，散發著櫃檯底特有的樟腦與舊木頭氣味，這是一個殘疾老人在幾毛錢的微薄利潤裡一張張積攢下來的！更重要的是包裹散鈔的舊日曆紙背面，老人用紅鉛筆記滿了進貨手賬，而在案發當天的那一頁，老人用粗筆重重圈出了一個圓圈，寫著：『阿浩今日返屋企』！這不是倉皇搶奪的贓款，這是老人在暴雨襲來前，早就整整齊齊備好、靜靜放在櫃檯上等待孫子回家的全部心血！",
+                delta: 35,
+                strike: 0,
+                badge: "核心意象賦魂",
+                feedback: "旁聽席為之肅穆！林浩伏案痛哭，控方物證鏈被徹底瓦解！第三幕抗辯成功成立！"
+              }
+            ]
+          }
+        }
+      },
+
+      // 第四幕
+      {
+        act: 4,
+        title: "第四幕：被告自白 · 天平兩端的風暴",
+        shortTitle: "天平心理撕扯",
+        speaker: "檢控官 張大狀",
+        speakerSub: "發起最後致命一擊",
+        dialogue: "即便錢不是偷的，那林浩在看見祖父倒在血泊中時，為什麼沒有第一時間叫救護車？鄰居親耳聽見他拿著錢衝出大門狂喊『我恨死你』！這難道不是畏罪潛逃、見死不救的鐵證嗎？！",
+        visualType: "court_defendant",
+        strategies: [
+          { id: "s4_soul_battle", icon: "⚖️", title: "直面恐懼與親情天平之真實撕扯", desc: "引導被告如實剖白本能逃避恐慌與良知復甦追捕真兇之心理交鋒" },
+          { id: "s4_whitewash", icon: "😇", title: "作純粹利他與奔走求救之陳述", desc: "聲稱出門奔跑系前往診所尋求急救" },
+          { id: "s4_deny", icon: "🙅", title: "指引被告全盤否認喊過此話", desc: "主張鄰居聽覺有誤，堅稱自己從未出言" },
+          { id: "s4_silence", icon: "🤐", title: "建議被告行使緘默權", desc: "拒絕回應逃跑動機以避嫌" }
+        ],
+        outcomes: {
+          s4_deny: {
+            isSuccess: false,
+            scoreDelta: -15,
+            addStrike: 1,
+            examiner: "【抗辯無效 · 欲蓋彌彰】在多名街坊與巡警聽聞證言面前全盤否認，直接摧毀被告真誠度，絕不可取！",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "巡警與街坊口供均記錄在案，被告當庭公然撒謊，正說明其內心極度心虛！",
+            options: [
+              {
+                id: "s4_opt_deny",
+                text: "我從來沒有喊過這句話！是街坊聽錯了或者在陷害我！我推開門就嚇呆了，什麼都沒喊過！",
+                delta: -20,
+                strike: 1,
+                feedback: "法官搖頭，陪審團對林浩誠信產生嚴重動搖，發言被駁回。"
+              }
+            ]
+          },
+          s4_whitewash: {
+            isSuccess: false,
+            scoreDelta: -10,
+            addStrike: 0,
+            examiner: "【臉譜化破綻】深夜深水埗診所早已打烊。不敢承認恐懼而強行塑造完美聖人形象，反被控方邏輯擊破！",
+            responseSpeaker: "檢控官 張大狀",
+            responseText: "深夜十一點福榮街診所早已拉閘打烊，出門十米就是公用電話，這個藉口毫無說服力！",
+            options: [
+              {
+                id: "s4_opt_white",
+                text: "林浩當時一心只想著救人，奪門而出是為了狂奔到街角診所拍門求救，他從始至終都只有孝心！",
+                delta: -10,
+                strike: 0,
+                feedback: "控方指出診所打烊的常識漏洞，答辯無法成立。"
+              }
+            ]
+          },
+          s4_silence: {
+            isSuccess: false,
+            scoreDelta: -5,
+            addStrike: 0,
+            examiner: "【說服力不足】緘默無法洗脫逃逸嫌疑，陪審團需要聽見真實的人性對話。",
+            responseSpeaker: "法官 大人",
+            responseText: "被告有權緘默，但若不對離場行為給出合理解釋，陪審團將依常理評斷。",
+            options: [
+              {
+                id: "s4_opt_silence",
+                text: "辯方建議被告行使法定緘默權，控方不能以離場反推殺人故意。",
+                delta: -5,
+                strike: 0,
+                feedback: "未能打破僵局，無法推進。"
+              }
+            ]
+          },
+          s4_soul_battle: {
+            isSuccess: true,
+            scoreDelta: 35,
+            addStrike: 0,
+            examiner: "【靈魂自白 · 豐富級 ★★★】不避諱前科少年的本能恐慌（想逃跑的魔鬼），但爺爺攥緊的塑料打火機與追趕後巷真兇的怒吼，讓人物血肉豐滿，真實動人！",
+            responseSpeaker: "警方 補充調查員",
+            responseText: "報告法庭！警方剛剛在後巷垃圾站起獲真兇遺棄的帶血撬棒與失竊香菸，真兇已於一小時前落網！林浩口供與真兇逃竄路線完全吻合！",
+            options: [
+              {
+                id: "s4_opt_master",
+                text: "林浩在證人席上顫抖抬頭：『法官大人，我承認……推開門看見爺爺倒在血泊中那一秒，我心裡的天平劇烈倒塌了！一邊是深入骨髓的恐懼——我是個有前科的爛泥，警察來了一定會抓我，腦子裡有個聲音瘋狂尖叫：拿著錢快跑！但另一邊……我看見爺爺手裡死死抓著我小時候買給他的塑料打火機，看見地上的血一點點漫開……如果我跑了，我這輩子就真的徹底爛透了！我沒有逃跑！我是看見後門被撬開、一個拿著鐵棍的黑影衝進雨裡，我才抓起螺絲刀追出去！我對著那個逃跑的賊狂喊「我恨死你」……但我更恨的是我自己，為什麼我沒能早回來半小時！』",
+                delta: 35,
+                strike: 0,
+                badge: "天平心理撕扯",
+                feedback: "後巷真兇落網之物證呈堂！真相徹底大白，第四幕抗辯成功成立！"
+              }
+            ]
+          }
+        }
+      },
+
+      // 第五幕
+      {
+        act: 5,
+        title: "第五幕：終局宣判 · 法庭重門推開",
+        shortTitle: "多感官以景作結",
+        speaker: "法官 大人",
+        speakerSub: "敲響終審法槌",
+        dialogue: "全體陪審員一致裁定：被告林浩，所有罪名——不成立，當庭獲釋！真兇已供認乘風雨入室盜竊並擊傷店主之全部罪行！本庭宣布休庭！",
+        visualType: "court_verdict",
+        strategies: [
+          { id: "s5_scenery", icon: "🌅", title: "多感官情景交融以景作結", desc: "調動晨曦金光、微涼晨風、青草泥土清甜與筆直背影寄託重生" },
+          { id: "s5_slogan", icon: "📢", title: "總結陳詞：抒發正義宣示", desc: "以宏大敘事闡述司法公正與反對歧視之理念" },
+          { id: "s5_narrative", icon: "📝", title: "交代人物後續下落與行蹤", desc: "記錄林浩前往醫院看望祖父之具體過程" },
+          { id: "s5_brief", icon: "🛑", title: "簡明扼要結束全篇", desc: "以法庭關閉一句話作結" }
+        ],
+        outcomes: {
+          s5_slogan: {
+            isSuccess: false,
+            scoreDelta: 0,
+            addStrike: 0,
+            examiner: "【達意級 ★☆☆ · 口號說教】典型喊口號收尾，把深刻的人生感悟降格為說教，缺乏文學回甘，建議採用情景交融手法。",
+            responseSpeaker: "公設辯護律師",
+            responseText: "庭審記錄存檔，然而篇章收束顯得平淡空洞。",
+            options: [
+              {
+                id: "s5_opt_slogan",
+                text: "正義終於得到了伸張！法律是公正的，我們以後千萬不能隨便歧視有前科的人，人間處處有真情，這真是一場偉大的勝利！",
+                delta: 5,
+                strike: 0,
+                feedback: "案件獲勝，但文章結尾流於庸俗套路，未能發揮文字之美。"
+              }
+            ]
+          },
+          s5_narrative: {
+            isSuccess: false,
+            scoreDelta: 5,
+            addStrike: 0,
+            examiner: "【具體級 ★★☆ · 平鋪直敘】交代了下落，但文字缺少感染力與餘韻。",
+            responseSpeaker: "公設辯護律師",
+            responseText: "林浩辦理手續離開法庭。",
+            options: [
+              {
+                id: "s5_opt_nar",
+                text: "宣判後，我和林浩一起走出了法庭，去醫院看望已經清醒過來的爺爺。林浩決定好好做人，雜貨店也將重新開張。",
+                delta: 5,
+                strike: 0,
+                feedback: "普通平鋪敘述結尾。"
+              }
+            ]
+          },
+          s5_brief: {
+            isSuccess: false,
+            scoreDelta: 0,
+            addStrike: 0,
+            examiner: "【草草收筆】文章戛然而止，浪費了全篇積累的厚重情感。",
+            responseSpeaker: "公設辯護律師",
+            responseText: "法庭關門。",
+            options: [
+              {
+                id: "s5_opt_brief",
+                text: "林浩被無罪釋放了，這場冤案終於結束了。",
+                delta: 0,
+                strike: 0,
+                feedback: "結尾空虛無力。"
+              }
+            ]
+          },
+          s5_scenery: {
+            isSuccess: true,
+            scoreDelta: 35,
+            addStrike: 0,
+            examiner: "【滿分氣象 · 豐富級 ★★★】神來之筆！不提『希望』二字，而雨後晨曦、青草清甜、洗去污名的白襯衫與『拉得筆直的身影』，已將少年的重生與人性的洗禮昇華至極致！",
+            responseSpeaker: "公設辯護律師",
+            responseText: "重門初開，晨光普照。文字的力量洗刷了冤屈，完成了傳奇般的全篇昇華！",
+            options: [
+              {
+                id: "s5_opt_master",
+                text: "推開法庭那扇沉重冰冷的銅框大門，洗滌了一夜的喧囂與暴雨不知何時早已止息。迎面拂來的是初晴時帶著泥土與青草清甜的微涼晨風，深深吸入胸膛，洗去了法庭內盤桓不散的沉悶與藥水氣息。天際厚重的濃雲裂開了一道金色的縫隙，溫熱的晨曦穿透薄霧，斜斜照在林浩那件洗得發白、卻不再蒙受污名的粗布襯衫上。遠處深水埗老街傳來熟悉的早市嘈雜聲，生機盎然。少年朝著我深深鞠了一躬，轉身快步朝著醫院的方向奔去。在金色的朝陽下，他單薄的身影被拉得筆直而修長。",
+                delta: 35,
+                strike: 0,
+                badge: "多感官以景作結",
+                feedback: "達成傳奇【全票無罪 · 5** 篇章逆轉】終局！"
+              }
+            ]
+          }
+        }
+      }
+    ];
+
+    // 全局遊戲運作狀態
+    let appState = {
+      currentActIndex: 0,
+      juryBalance: 0, // -50 (定罪) 到 +50 (無罪)
+      strikes: 0,     // 滿 3 次入獄
+      soundEnabled: true,
+      selectedStrategyId: null,
+      activeOutcome: null,
+      unlockedEvidenceIds: [],
+      collectedBadges: [],
+      collectedParagraphs: [],
+      witnessInspectFound: { pant: false, throat: false, eyes: false },
+      witnessInspectComplete: false,
+      isGameOver: false,
+      isVictorious: false
+    };
+
+    // Web Audio 音效產生器
+    class SoundController {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+      }
+      playTone(freq, type, duration, gainVal = 0.1) {
+        if (!appState.soundEnabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      }
+      gavel() {
+        this.playTone(130, 'triangle', 0.4, 0.3);
+        setTimeout(() => this.playTone(90, 'sine', 0.3, 0.25), 50);
+      }
+      clue() {
+        this.playTone(880, 'sine', 0.15, 0.15);
+        setTimeout(() => this.playTone(1320, 'sine', 0.25, 0.15), 90);
+      }
+      rebuttal() {
+        this.playTone(520, 'sawtooth', 0.15, 0.15);
+        setTimeout(() => this.playTone(780, 'sawtooth', 0.18, 0.15), 110);
+        setTimeout(() => this.playTone(1040, 'triangle', 0.35, 0.2), 220);
+      }
+    }
+    const audio = new SoundController();
+
+    // DOM 快取
+    const stepNav = document.getElementById('step-nav');
+    const meterLeft = document.getElementById('meter-left');
+    const meterRight = document.getElementById('meter-right');
+    const meterText = document.getElementById('meter-text');
+    const strikeIcons = document.querySelectorAll('.strike-icon');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundIcon = document.getElementById('sound-icon');
+    const restartBtn = document.getElementById('restart-btn');
+
+    const evidenceListContainer = document.getElementById('evidence-list-container');
+    const evidenceCountBadge = document.getElementById('evidence-count-badge');
+    const badgeContainer = document.getElementById('badge-container');
+    const badgeCountText = document.getElementById('badge-count-text');
+
+    const stageActLabel = document.getElementById('stage-act-label');
+    const stageStatusBadge = document.getElementById('stage-status-badge');
+    const visualContent = document.getElementById('visual-content');
+    const speakerName = document.getElementById('speaker-name');
+    const speakerSub = document.getElementById('speaker-sub');
+    const dialogueText = document.getElementById('dialogue-text');
+
+    const decisionGuideText = document.getElementById('decision-guide-text');
+    const stepPhaseBadge = document.getElementById('step-phase-badge');
+    const strategyHub = document.getElementById('strategy-hub');
+    const defenseCardsContainer = document.getElementById('defense-cards-container');
+
+    const evalGradeTag = document.getElementById('eval-grade-tag');
+    const examinerComment = document.getElementById('examiner-comment');
+    const barMaterial = document.getElementById('bar-material');
+    const barAction = document.getElementById('bar-action');
+    const barSymbol = document.getElementById('bar-symbol');
+    const scoreMaterial = document.getElementById('score-material');
+    const scoreAction = document.getElementById('score-action');
+    const scoreSymbol = document.getElementById('score-symbol');
+    const collectedSnippets = document.getElementById('collected-snippets');
+    const articleLockHint = document.getElementById('article-lock-hint');
+
+    const evidenceModal = document.getElementById('evidence-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalContent = document.getElementById('modal-content');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+
+    const articleModal = document.getElementById('article-modal');
+    const articleCloseBtn = document.getElementById('article-close-btn');
+    const closeModalFooterBtn = document.getElementById('close-modal-footer-btn');
+    const assembledArticleBody = document.getElementById('assembled-article-body');
+    const copyArticleBtn = document.getElementById('copy-article-btn');
+    const copyStatus = document.getElementById('copy-status');
+
+    // 初始化應用程式
+    function init() {
+      renderNavSteps();
+      renderEvidenceList();
+      loadCurrentAct();
+      updateStatusDisplay();
+      bindEvents();
+    }
+
+    // 渲染物證列表（嚴格依賴解鎖狀態）
+    function renderEvidenceList() {
+      const unlockedCount = appState.unlockedEvidenceIds.length;
+      evidenceCountBadge.textContent = `物證解鎖 ${unlockedCount} / 4`;
+
+      if (unlockedCount === 0) {
+        evidenceListContainer.innerHTML = `
+          <div class="p-4 rounded-xl bg-slate-950/70 border border-dashed border-slate-800 text-center text-slate-500 text-xs space-y-1">
+            <div class="text-base">🔒</div>
+            <div class="font-bold text-slate-400">案卷物證封存待調查</div>
+            <p class="text-[10px] text-slate-600">在庭審中執行調查策略後方可解鎖收錄</p>
+          </div>
+        `;
+        return;
+      }
+
+      evidenceListContainer.innerHTML = appState.unlockedEvidenceIds.map(eid => {
+        const item = EVIDENCE_DATABASE[eid];
+        return `
+          <button data-evidence-id="${item.id}" class="evidence-unlocked-btn w-full text-left p-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-750 border border-amber-500/40 hover:border-amber-400 transition flex items-start gap-2.5 text-xs group shadow-sm">
+            <span class="text-lg group-hover:scale-110 transition-transform">${item.icon}</span>
+            <div class="overflow-hidden">
+              <div class="font-bold text-amber-300 group-hover:text-amber-200 transition truncate">${item.name}</div>
+              <p class="text-[11px] text-slate-400 truncate">${item.shortDesc}</p>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.evidence-unlocked-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const eid = btn.getAttribute('data-evidence-id');
+          const data = EVIDENCE_DATABASE[eid];
+          openModal(data.name, data.detailHtml, "關閉檢驗");
+        });
+      });
+    }
+
+    function renderNavSteps() {
+      stepNav.innerHTML = SCENARIOS.map((item, idx) => {
+        const isCurrent = idx === appState.currentActIndex;
+        const isPast = idx < appState.currentActIndex;
+        let colorClass = "bg-slate-900 text-slate-400 border-slate-800";
+        if (isCurrent) colorClass = "bg-amber-500/20 text-amber-300 border-amber-500 font-bold";
+        if (isPast) colorClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+
+        return `
+          <div class="flex items-center gap-1.5 shrink-0 px-3 py-1 rounded-lg border text-xs transition ${colorClass}">
+            <span class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${isCurrent ? 'bg-amber-500 text-slate-950 font-bold' : isPast ? 'bg-emerald-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">
+              ${isPast ? '✓' : idx + 1}
+            </span>
+            <span class="whitespace-nowrap">${item.shortTitle}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadCurrentAct() {
+      if (appState.currentActIndex >= SCENARIOS.length) {
+        handleFinalVictory();
+        return;
+      }
+
+      const actData = SCENARIOS[appState.currentActIndex];
+      appState.selectedStrategyId = null;
+      appState.activeOutcome = null;
+
+      if (actData.act === 2) {
+        appState.witnessInspectFound = { pant: false, throat: false, eyes: false };
+        appState.witnessInspectComplete = false;
+      }
+
+      renderNavSteps();
+
+      stageActLabel.textContent = actData.title;
+      stageStatusBadge.textContent = "辯護方針制定中";
+      stageStatusBadge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+
+      speakerName.textContent = actData.speaker;
+      speakerSub.textContent = actData.speakerSub;
+      dialogueText.textContent = actData.dialogue;
+
+      renderStageVisual(actData.visualType);
+
+      decisionGuideText.innerHTML = `<span>🎯 第一步：研判對方陳詞漏洞，選定辯護方針（第 ${actData.act} 幕）</span>`;
+      stepPhaseBadge.textContent = "階段一：策略制定";
+
+      defenseCardsContainer.classList.add('hidden');
+      defenseCardsContainer.innerHTML = '';
+
+      renderStrategies(actData.strategies);
+
+      evalGradeTag.textContent = "審查策略中";
+      evalGradeTag.className = "text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded";
+      examinerComment.textContent = `當前進入${actData.title}。先分析控方論點在客觀物理或邏輯上的盲點，切忌輕率開口！`;
+    }
+
+    function renderStageVisual(type) {
+      visualContent.innerHTML = '';
+      if (type === 'court_prosecutor') {
+        visualContent.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-rose-500 bg-slate-900 flex items-center justify-center text-4xl shadow-xl shadow-rose-950/60 mb-2">⚖️</div>
+            <div class="px-3 py-1 bg-rose-950/80 border border-rose-600/60 rounded-full text-rose-300 text-xs font-bold font-serif-tc">檢控官 張大狀 指控中</div>
+            <p class="text-slate-400 text-[11px] mt-1.5">「動機明確，物證確鑿，被告無可辯駁！」</p>
+          </div>
+        `;
+      } else if (type === 'court_witness') {
+        visualContent.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-amber-500 bg-slate-900 flex items-center justify-center text-4xl shadow-xl shadow-amber-950/60 mb-2">👓</div>
+            <div class="px-3 py-1 bg-amber-950/80 border border-amber-600/60 rounded-full text-amber-300 text-xs font-bold font-serif-tc">證人席：陳先生</div>
+            <p class="text-slate-400 text-[11px] mt-1.5">隔壁五金店老闆 · 聲稱親眼目擊推搡</p>
+          </div>
+        `;
+      } else if (type === 'court_evidence_cash') {
+        visualContent.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-emerald-500 bg-slate-900 flex items-center justify-center text-4xl shadow-xl shadow-emerald-950/60 mb-2">💵</div>
+            <div class="px-3 py-1 bg-emerald-950/80 border border-emerald-600/60 rounded-full text-emerald-300 text-xs font-bold font-serif-tc">關鍵物證：兩萬四千元現款</div>
+            <p class="text-slate-400 text-[11px] mt-1.5">查扣自林浩背包，帶有血跡</p>
+          </div>
+        `;
+      } else if (type === 'court_defendant') {
+        visualContent.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-purple-500 bg-slate-900 flex items-center justify-center text-4xl shadow-xl shadow-purple-950/60 mb-2">⛓️</div>
+            <div class="px-3 py-1 bg-purple-950/80 border border-purple-600/60 rounded-full text-purple-300 text-xs font-bold font-serif-tc">被告席：林浩</div>
+            <p class="text-slate-400 text-[11px] mt-1.5">靈魂撕扯中 · 恐懼與良知的對決</p>
+          </div>
+        `;
+      } else if (type === 'court_verdict') {
+        visualContent.innerHTML = `
+          <div class="flex flex-col items-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-amber-400 bg-slate-900 flex items-center justify-center text-4xl shadow-2xl shadow-amber-500/40 mb-2 animate-bounce">🏛️</div>
+            <div class="px-4 py-1.5 bg-amber-500 text-slate-950 text-xs font-bold font-serif-tc rounded-full shadow">全案審結：全票無罪當庭開釋！</div>
+            <p class="text-emerald-400 text-xs mt-1 font-bold">洗雪沉冤 · 逆轉大勝</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderStrategies(strategies) {
+      strategyHub.classList.remove('hidden');
+      strategyHub.innerHTML = strategies.map(s => `
+        <button data-strategy-id="${s.id}" class="strategy-btn text-left p-3 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/80 transition flex flex-col justify-between group shadow-sm">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-base group-hover:scale-110 transition-transform">${s.icon}</span>
+            <span class="font-bold text-slate-200 text-xs group-hover:text-amber-300 transition truncate">${s.title}</span>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-tight">${s.desc}</p>
+        </button>
+      `).join('');
+
+      document.querySelectorAll('.strategy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sid = btn.getAttribute('data-strategy-id');
+          handleSelectStrategy(sid);
+        });
+      });
+    }
+
+    function handleSelectStrategy(strategyId) {
+      audio.clue();
+      appState.selectedStrategyId = strategyId;
+      const actData = SCENARIOS[appState.currentActIndex];
+      const outcome = actData.outcomes[strategyId];
+      appState.activeOutcome = outcome;
+
+      // 若策略有解鎖物證，動態加入案卷櫃
+      if (outcome.unlockEvidence) {
+        outcome.unlockEvidence.forEach(eid => {
+          if (!appState.unlockedEvidenceIds.includes(eid)) {
+            appState.unlockedEvidenceIds.push(eid);
+          }
+        });
+        renderEvidenceList();
+      }
+
+      // 樣式高亮
+      document.querySelectorAll('.strategy-btn').forEach(btn => {
+        if (btn.getAttribute('data-strategy-id') === strategyId) {
+          btn.className = "strategy-btn text-left p-3 rounded-xl bg-amber-500/20 border-2 border-amber-400 transition flex flex-col justify-between shadow-md";
+        } else {
+          btn.className = "strategy-btn text-left p-3 rounded-xl bg-slate-950/40 border border-slate-900 opacity-50 transition flex flex-col justify-between";
+        }
+      });
+
+      examinerComment.textContent = outcome.examiner;
+      evalGradeTag.textContent = outcome.addStrike > 0 ? "策略危險" : "策略審查中";
+      evalGradeTag.className = outcome.addStrike > 0 ? "text-[10px] bg-rose-950 text-rose-300 border border-rose-800 px-2 py-0.5 rounded font-bold" : "text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded";
+
+      speakerName.textContent = outcome.responseSpeaker;
+      dialogueText.textContent = outcome.responseText;
+
+      if (outcome.triggerInteractiveInspection) {
+        startWitnessInspection();
+        return;
+      }
+
+      renderDefenseCards(outcome.options);
+    }
+
+    // 渲染辯護發言卡片（徹底移除所有劇透標籤與提示樣式）
+    function renderDefenseCards(options) {
+      decisionGuideText.innerHTML = `<span>⚡ 第二步：選定並發表你的正式答辯發言</span>`;
+      stepPhaseBadge.textContent = "階段二：當庭答辯";
+
+      defenseCardsContainer.classList.remove('hidden');
+      defenseCardsContainer.innerHTML = options.map((opt, idx) => `
+        <div data-option-id="${opt.id}" class="defense-card p-3 sm:p-4 rounded-xl border border-slate-700 bg-slate-950/80 hover:border-amber-400 hover:bg-slate-900 cursor-pointer transition flex flex-col gap-1.5 shadow-md group">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span class="font-bold text-slate-300">辯護發言方案 ${idx + 1}</span>
+            <span class="text-[11px] text-amber-400 opacity-0 group-hover:opacity-100 transition font-bold">點擊發表此答辯 ➔</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans">${opt.text}</p>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.defense-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const optId = card.getAttribute('data-option-id');
+          const chosenOpt = appState.activeOutcome.options.find(o => o.id === optId);
+          submitDefenseSpeech(chosenOpt);
+        });
+      });
+    }
+
+    // 第二幕：證人神態微動作特寫探索
+    function startWitnessInspection() {
+      audio.clue();
+      decisionGuideText.innerHTML = `<span class="text-amber-400 font-bold">🔍 特寫觀察：請點擊證人身上的 3 處可疑破綻！</span>`;
+      stepPhaseBadge.textContent = "階段二：微動作特寫探查";
+
+      strategyHub.classList.add('hidden');
+      defenseCardsContainer.classList.add('hidden');
+
+      visualContent.innerHTML = `
+        <div class="relative w-full max-w-sm bg-slate-950 border border-amber-500/40 rounded-xl p-3 shadow-2xl flex flex-col items-center">
+          <div class="text-[11px] font-bold text-amber-300 mb-2 flex items-center justify-between w-full">
+            <span>證人席微反應特寫</span>
+            <span id="inspect-progress" class="font-mono text-amber-400">已發現：0 / 3</span>
+          </div>
+
+          <div class="relative w-64 h-52 bg-slate-900 rounded-lg border border-slate-800 overflow-hidden flex flex-col items-center justify-center select-none shadow-inner">
+            <div class="text-6xl mb-1">👴🏻</div>
+            <div class="text-xs text-slate-400">陳先生 (五金店主) · 緊張強辯</div>
+
+            <!-- 熱區 1：雙眼眼神 -->
+            <button id="hotspot-eyes" class="absolute top-9 left-24 w-16 h-7 rounded-full border border-dashed border-amber-400/70 hover:bg-amber-400/20 transition flex items-center justify-center cursor-pointer" title="觀察眼神">
+              <span class="text-[9px] bg-slate-950/90 text-amber-300 px-1 rounded shadow">雙眼眼神</span>
+            </button>
+
+            <!-- 熱區 2：喉結咽喉 -->
+            <button id="hotspot-throat" class="absolute top-20 left-27 w-12 h-7 rounded-full border border-dashed border-amber-400/70 hover:bg-amber-400/20 transition flex items-center justify-center cursor-pointer" title="觀察咽喉">
+              <span class="text-[9px] bg-slate-950/90 text-amber-300 px-1 rounded shadow">咽喉</span>
+            </button>
+
+            <!-- 熱區 3：褲縫右手 -->
+            <button id="hotspot-pant" class="absolute bottom-3 right-8 w-20 h-9 rounded-full border border-dashed border-amber-400/70 hover:bg-amber-400/20 transition flex items-center justify-center cursor-pointer" title="觀察右手">
+              <span class="text-[9px] bg-slate-950/90 text-amber-300 px-1 rounded shadow">右手褲縫</span>
+            </button>
+          </div>
+
+          <div class="w-full mt-2.5 space-y-1 text-[11px]" id="inspect-log">
+            <div class="text-slate-500 italic text-center">滑鼠移至上方並點擊破綻部位...</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('hotspot-eyes').addEventListener('click', () => recordInspectionClue('eyes', '【破綻一 · 視線飄移】目光不敢直視辯護人與法官，心虛向右上方頻繁游移！'));
+      document.getElementById('hotspot-throat').addEventListener('click', () => recordInspectionClue('throat', '【破綻二 · 生理微反應】說話時喉結劇烈上下吞嚥兩次，暴露極度慌張！'));
+      document.getElementById('hotspot-pant').addEventListener('click', () => recordInspectionClue('pant', '【破綻三 · 肢體僵硬】右手死死攥緊西褲褲縫，大拇指因用力而不住顫抖！'));
+    }
+
+    function recordInspectionClue(key, desc) {
+      if (appState.witnessInspectFound[key]) return;
+      audio.clue();
+      appState.witnessInspectFound[key] = true;
+
+      const btn = document.getElementById(`hotspot-${key}`);
+      if (btn) {
+        btn.className = "absolute rounded-full border border-emerald-400 bg-emerald-500/30 flex items-center justify-center pointer-events-none";
+        btn.innerHTML = `<span class="text-[9px] bg-emerald-950 text-emerald-300 px-1 rounded font-bold">✓ 已發現</span>`;
+      }
+
+      const count = Object.values(appState.witnessInspectFound).filter(Boolean).length;
+      document.getElementById('inspect-progress').textContent = `已發現：${count} / 3`;
+
+      const logBox = document.getElementById('inspect-log');
+      if (count === 1) logBox.innerHTML = '';
+      const p = document.createElement('div');
+      p.className = "p-1.5 bg-slate-900 border border-emerald-500/40 rounded text-emerald-300 text-[10px] flex items-center gap-1.5";
+      p.innerHTML = `<span>🔍</span><span>${desc}</span>`;
+      logBox.appendChild(p);
+
+      if (count === 3 && !appState.witnessInspectComplete) {
+        appState.witnessInspectComplete = true;
+        setTimeout(() => {
+          audio.rebuttal();
+          const masterOption = {
+            id: "s2_opt_master",
+            text: "陳先生，當你剛才斬釘截鐵說出『看身形也認得』時，你的右手為什麼一直死死抓著褲縫、指節發白地不住揉搓？你的喉結為什麼連續吞嚥了兩次？甚至你的眼神，下意識地飄向了右上角？你在心虛！因為你很清楚，在風雨狂暴的夜裡，隔著滿是污垢與雨水的毛玻璃，你看到的只是一個模糊晃動的黑影！但在你的潛意識裡，你早就認定林浩是個沒救的混混，所以你毫不猶豫地把那個黑影安在了林浩身上！你不是在為正義作證，你是在用你刻骨銘心的偏見，在法庭上謀殺一個少年的未來！",
+            delta: 35,
+            strike: 0,
+            badge: "神態微動作特寫",
+            feedback: "證人當場崩潰退縮，承認定罪全出於刻板印象，第二幕抗辯成功成立！"
+          };
+          appState.activeOutcome.options = [masterOption];
+
+          visualContent.innerHTML = `
+            <div class="flex flex-col items-center">
+              <div class="text-4xl animate-bounce mb-2">⚡</div>
+              <div class="px-3 py-1 bg-amber-500 text-slate-950 text-xs font-bold rounded-full">神態破綻集齊！立即發表致命質詢！</div>
+            </div>
+          `;
+          renderDefenseCards([masterOption]);
+        }, 500);
+      }
+    }
+
+    // 提交答辯發言
+    function submitDefenseSpeech(option) {
+      appState.juryBalance += option.delta;
+      if (appState.juryBalance > 50) appState.juryBalance = 50;
+      if (appState.juryBalance < -50) appState.juryBalance = -50;
+
+      if (option.strike > 0) {
+        appState.strikes += option.strike;
+        audio.gavel();
+      } else if (appState.activeOutcome.isSuccess) {
+        audio.rebuttal();
+      } else {
+        audio.clue();
+      }
+
+      updateStatusDisplay();
+
+      // 檢驗是否累積3次敲槌直接入獄
+      if (appState.strikes >= 3) {
+        triggerGameOver("【審判終結：辯護失格 · 被告入獄】\n辯護人因多次提出缺乏事實依據、捏造或空洞之陳詞，遭法庭發出累計三次嚴厲警告！法官勒令終止辯護，林浩被裁定入室弒親搶劫罪名成立，判處重刑十二年！\n評卷員診斷：【答錯入獄 · 取材與論證完全崩潰】");
+        return;
+      }
+
+      // 嚴格阻斷校驗：第一關及任何關卡若答錯，絕對不准進入下一關！
+      if (!appState.activeOutcome.isSuccess) {
+        showRetryModal(option);
+      } else {
+        if (option.badge && !appState.collectedBadges.includes(option.badge)) {
+          appState.collectedBadges.push(option.badge);
+          appState.collectedParagraphs.push({
+            act: appState.currentActIndex + 1,
+            badge: option.badge,
+            text: option.text
+          });
+        }
+        renderBadgesAndSnippets();
+        showPassModal(option);
+      }
+    }
+
+    function showRetryModal(option) {
+      modalTitle.innerHTML = `<span class="text-rose-400 font-bold">❌ 抗辯無效 · 法庭駁回（不可過關）</span>`;
+      modalContent.innerHTML = `
+        <div class="p-3 bg-rose-950/40 border border-rose-700/80 rounded-xl space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-rose-300">
+            <span>⚠️ 答辯缺乏客觀事實或論證不足</span>
+            <span>陪審團好感：${option.delta}</span>
+          </div>
+          <p class="text-xs text-rose-100">${option.feedback}</p>
+        </div>
+        <div class="text-[11px] text-slate-300 p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+          <strong>👨‍🏫 評卷員點評：</strong>${appState.activeOutcome.examiner}
+        </div>
+        <p class="text-xs text-amber-300 font-bold text-center">本關抗辯未獲法庭採納，嚴禁推進至下一階段！請重新審核策略與物證！</p>
+      `;
+      modalConfirmBtn.textContent = "🔄 重新審視當前策略";
+      evidenceModal.classList.remove('hidden');
+
+      const retryHandler = () => {
+        evidenceModal.classList.add('hidden');
+        modalConfirmBtn.removeEventListener('click', retryHandler);
+        loadCurrentAct();
+      };
+      modalConfirmBtn.addEventListener('click', retryHandler);
+    }
+
+    function showPassModal(option) {
+      modalTitle.innerHTML = `<span class="text-emerald-400 font-bold">✅ 第 ${appState.currentActIndex + 1} 幕抗辯成立！</span>`;
+      modalContent.innerHTML = `
+        <div class="p-3 bg-emerald-950/40 border border-emerald-600/80 rounded-xl space-y-1.5">
+          <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
+            <span>🎉 成功破除控方指控偏見</span>
+            <span>陪審團心證：+${option.delta}</span>
+          </div>
+          <p class="text-xs text-emerald-100">${option.feedback}</p>
+        </div>
+        <div class="text-[11px] text-slate-300 p-2.5 bg-slate-950 rounded-xl border border-slate-800">
+          <strong>👨‍🏫 評卷員點評：</strong>${appState.activeOutcome.examiner}
+        </div>
+      `;
+      modalConfirmBtn.textContent = (appState.currentActIndex + 1 < SCENARIOS.length) ? "推進至下一幕庭審 ➔" : "迎向終審宣判 ➔";
+      evidenceModal.classList.remove('hidden');
+
+      const nextHandler = () => {
+        evidenceModal.classList.add('hidden');
+        modalConfirmBtn.removeEventListener('click', nextHandler);
+        appState.currentActIndex++;
+        loadCurrentAct();
+      };
+      modalConfirmBtn.addEventListener('click', nextHandler);
+    }
+
+    function updateStatusDisplay() {
+      const innocentPct = Math.min(100, Math.max(0, 50 + appState.juryBalance));
+      const guiltyPct = 100 - innocentPct;
+      meterLeft.style.width = `${guiltyPct}%`;
+      meterRight.style.width = `${innocentPct}%`;
+
+      if (appState.juryBalance > 15) {
+        meterText.textContent = "傾向無罪";
+        meterText.className = "font-bold text-emerald-400 text-[11px] w-14 text-center";
+      } else if (appState.juryBalance < -15) {
+        meterText.textContent = "傾向定罪";
+        meterText.className = "font-bold text-rose-400 text-[11px] w-14 text-center";
+      } else {
+        meterText.textContent = "勢均力敵";
+        meterText.className = "font-bold text-amber-400 text-[11px] w-14 text-center";
+      }
+
+      strikeIcons.forEach((icon, i) => {
+        if (i < appState.strikes) {
+          icon.className = "text-rose-500 text-sm strike-icon animate-bounce";
+        } else {
+          icon.className = "text-slate-600 text-sm strike-icon";
+        }
+      });
+
+      const mScore = Math.min(100, Math.max(10, 30 + (appState.collectedBadges.includes("精準客觀洞察") ? 45 : 0)));
+      const aScore = Math.min(100, Math.max(10, 20 + (appState.collectedBadges.includes("神態微動作特寫") ? 55 : 0)));
+      const sScore = Math.min(100, Math.max(10, 10 + (appState.collectedBadges.includes("核心意象賦魂") ? 45 : 0) + (appState.collectedBadges.includes("多感官以景作結") ? 35 : 0)));
+
+      scoreMaterial.textContent = `${mScore}%`;
+      barMaterial.style.width = `${mScore}%`;
+
+      scoreAction.textContent = `${aScore}%`;
+      barAction.style.width = `${aScore}%`;
+
+      scoreSymbol.textContent = `${sScore}%`;
+      barSymbol.style.width = `${sScore}%`;
+
+      badgeCountText.textContent = `${appState.collectedBadges.length} / 5`;
+    }
+
+    function renderBadgesAndSnippets() {
+      if (appState.collectedBadges.length === 0) {
+        badgeContainer.innerHTML = `<span class="text-[10px] bg-slate-950 text-slate-600 border border-slate-800 px-2 py-1 rounded-lg">尚待庭審驗證...</span>`;
+      } else {
+        badgeContainer.innerHTML = appState.collectedBadges.map(b => `
+          <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-lg font-bold flex items-center gap-1">
+            <span>✨</span><span>${b}</span>
+          </span>
+        `).join('');
+      }
+
+      if (appState.collectedParagraphs.length === 0) {
+        collectedSnippets.innerHTML = `
+          <div class="text-slate-600 italic p-3 bg-slate-950/40 rounded-xl border border-dashed border-slate-800 text-center">
+            尚待在庭審中精準破案...
+          </div>
+        `;
+      } else {
+        collectedSnippets.innerHTML = appState.collectedParagraphs.map(p => `
+          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-300">
+            <span class="text-amber-400 font-bold">[第${p.act}幕·${p.badge}]</span> ${p.text.substring(0, 60)}...
+          </div>
+        `).join('');
+      }
+    }
+
+    function triggerGameOver(msg) {
+      appState.isGameOver = true;
+      audio.gavel();
+      modalTitle.innerHTML = `<span class="text-rose-500 font-bold">⛓️ 辯護失敗 · 被告罪成入獄</span>`;
+      modalContent.innerHTML = `
+        <div class="p-4 bg-rose-950/60 border border-rose-700 rounded-xl text-rose-200 text-xs sm:text-sm space-y-2 whitespace-pre-line leading-relaxed font-sans shadow-inner">
+          ${msg}
+        </div>
+      `;
+      modalConfirmBtn.textContent = "🔄 重新開庭辯護（重置全案）";
+      evidenceModal.classList.remove('hidden');
+
+      const restartHandler = () => {
+        evidenceModal.classList.add('hidden');
+        modalConfirmBtn.removeEventListener('click', restartHandler);
+        resetGame();
+      };
+      modalConfirmBtn.addEventListener('click', restartHandler);
+    }
+
+    // 終極大勝：只有全部答對達成無罪才能解鎖範文
+    function handleFinalVictory() {
+      appState.isVictorious = true;
+      audio.rebuttal();
+
+      stageActLabel.textContent = "終審判決 · 沉冤得雪！";
+      stageStatusBadge.textContent = "全票無罪當庭釋放";
+      stageStatusBadge.className = "text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+
+      speakerName.textContent = "法庭公設辯護律師";
+      speakerSub.textContent = "審判結案陳詞";
+      dialogueText.textContent = "語言的精準與細節的力量，洗雪了少年長達數年的刻板偏見。恭喜你！成功達成 DSE 卷二滿分記敘抒情篇章組裝！";
+
+      renderStageVisual('court_verdict');
+
+      decisionGuideText.innerHTML = `<span class="text-emerald-400 font-bold">🎉 全案逆轉獲勝！5** 滿分篇章已正式解鎖</span>`;
+      stepPhaseBadge.textContent = "已解鎖滿分成果";
+
+      strategyHub.classList.add('hidden');
+      defenseCardsContainer.classList.remove('hidden');
+      defenseCardsContainer.innerHTML = `
+        <button id="final-open-article-btn" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
+          <span>📜 查看組裝完成的 DSE 5** 滿分篇章（技法高亮與複製）</span>
+        </button>
+      `;
+
+      // 右側解鎖提示
+      articleLockHint.className = "p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-600 text-xs text-emerald-300 text-center font-bold cursor-pointer hover:bg-emerald-900 transition";
+      articleLockHint.innerHTML = "📜 點擊檢閱 5** 滿分組裝篇章";
+      articleLockHint.onclick = openArticleModal;
+
+      document.getElementById('final-open-article-btn').addEventListener('click', openArticleModal);
+      setTimeout(openArticleModal, 600);
+    }
+
+    function openArticleModal() {
+      if (!appState.isVictorious) return;
+      renderAssembledArticle();
+      articleModal.classList.remove('hidden');
+    }
+
+    function renderAssembledArticle() {
+      const paras = [
+        {
+          title: "第一段：案發現場精準破局（破除環境偏見）",
+          cls: "highlight-env",
+          type: "env",
+          text: "八號風球狂暴地撕扯著深水埗老街。在老舊雜貨店內，兩米高的鐵皮氣窗被狂風徹底鉸斷，暴雨筆直灌入；老人倒臥的右手旁，倒著一把鋁合金折疊梯，梯腳卡在凹陷濕滑的地磚縫隙中，橫檔明顯扭曲下陷。通往櫃檯的積水地面上，除了老人自己的防滑膠鞋印與自上而下的垂直滴血痕跡，根本沒有任何第二個人踩著泥濘奔向櫃檯的外來腳印。"
+        },
+        {
+          title: "第二段：證人席上的神態微反應特寫（Show, don't tell）",
+          cls: "highlight-action",
+          type: "action",
+          text: "隔著那扇積滿油膩與雨水的毛玻璃，證人陳先生回答時右手死死抓著西褲褲縫，指節發白地不住揉搓，喉結連續吞嚥了兩次，眼神下意識飄向了右上角。在那風雨狂暴的夜裡，他看到的只是一個模糊晃動的黑影，卻用刻骨銘心的偏見，草率替少年定下了莫須有的罪名。"
+        },
+        {
+          title: "第三段：物證意象賦魂——兩萬四千元散鈔與紅圈（言外之意）",
+          cls: "highlight-symbol",
+          type: "symbol",
+          text: "這兩萬四千元，沒有一張千元大鈔，全是由一張張磨得起毛、被反覆撫平褶皺的十元、二十元小鈔拼湊而成，散發著雜貨店櫃檯下特有的樟腦與舊木頭氣味。包裹散鈔的舊日曆紙背面，是老人用一生的習慣記下的微薄手賬；而在案發當天的那一頁，老人用紅鉛筆重重圈出了一個圓圈，寫著：『阿浩今日返屋企』。這不是贓款，而是一個殘疾老人在暴雨前為孫子整整齊齊備好的全部期盼。"
+        },
+        {
+          title: "第四段：靈魂深處的動態天平自白（心理動態撕扯）",
+          cls: "highlight-inner",
+          type: "inner",
+          text: "看見血泊那一秒，少年心裡的天平劇烈倒塌了。一邊是深入骨髓的恐懼催促他拿錢逃跑；但另一邊，看見爺爺手裡死死抓著那只褪色的塑料打火機，良知在劇痛中復甦。他沒有逃跑，而是抓起螺絲刀追向撬門狂奔的黑影，在暴雨中狂喊『我恨死你』——他恨真兇，更恨自己沒能早回來半小時。"
+        },
+        {
+          title: "第五段：重門推開，多感官以景作結（情景交融）",
+          cls: "highlight-ending",
+          type: "ending",
+          text: "推開法庭那扇沉重冰冷的銅框大門，洗滌了一夜的喧囂與暴雨不知何時早已止息。迎面拂來的是初晴時帶著泥土與青草清甜的微涼晨風，洗去了法庭內盤桓不散的沉悶與藥水氣息。天際厚重的濃雲裂開了一道金色的縫隙，溫熱的晨曦穿透薄霧，斜斜照在林浩那件洗得發白、卻不再蒙受污名的粗布襯衫上。遠處深水埗老街傳來熟悉的早市叫賣聲。少年深深鞠了一躬，轉身快步朝著醫院的方向奔去。在金色的朝陽下，他單薄的身影被拉得筆直而修長。"
+        }
+      ];
+
+      assembledArticleBody.innerHTML = paras.map(p => `
+        <div class="article-para-block" data-type="${p.type}">
+          <div class="text-[10px] font-bold text-slate-500 mb-1 select-none flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span>${p.title}</span>
+          </div>
+          <p class="p-3 rounded-xl transition ${p.cls}">${p.text}</p>
+        </div>
+      `).join('');
+
+      applyHighlightFilters();
+    }
+
+    function applyHighlightFilters() {
+      const showEnv = document.getElementById('toggle-env').checked;
+      const showAction = document.getElementById('toggle-action').checked;
+      const showSymbol = document.getElementById('toggle-symbol').checked;
+      const showInner = document.getElementById('toggle-inner').checked;
+      const showEnding = document.getElementById('toggle-ending').checked;
+
+      document.querySelectorAll('.article-para-block').forEach(block => {
+        const type = block.getAttribute('data-type');
+        const p = block.querySelector('p');
+        p.className = 'p-3 rounded-xl transition';
+        if (type === 'env' && showEnv) p.classList.add('highlight-env');
+        if (type === 'action' && showAction) p.classList.add('highlight-action');
+        if (type === 'symbol' && showSymbol) p.classList.add('highlight-symbol');
+        if (type === 'inner' && showInner) p.classList.add('highlight-inner');
+        if (type === 'ending' && showEnding) p.classList.add('highlight-ending');
+      });
+    }
+
+    function bindEvents() {
+      modalCloseBtn.addEventListener('click', () => evidenceModal.classList.add('hidden'));
+      articleCloseBtn.addEventListener('click', () => articleModal.classList.add('hidden'));
+      closeModalFooterBtn.addEventListener('click', () => articleModal.classList.add('hidden'));
+
+      ['toggle-env', 'toggle-action', 'toggle-symbol', 'toggle-inner', 'toggle-ending'].forEach(id => {
+        document.getElementById(id).addEventListener('change', applyHighlightFilters);
+      });
+
+      copyArticleBtn.addEventListener('click', () => {
+        const fullText = Array.from(document.querySelectorAll('.article-para-block p')).map(p => p.textContent).join('\n\n');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(fullText).then(showCopiedNotice);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = fullText;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showCopiedNotice();
+        }
+      });
+
+      restartBtn.addEventListener('click', resetGame);
+
+      soundBtn.addEventListener('click', () => {
+        appState.soundEnabled = !appState.soundEnabled;
+        soundIcon.textContent = appState.soundEnabled ? "🔊" : "🔇";
+      });
+    }
+
+    function openModal(title, html, btnText = "確定") {
+      audio.clue();
+      modalTitle.innerHTML = `<span>${title}</span>`;
+      modalContent.innerHTML = html;
+      modalConfirmBtn.textContent = btnText;
+      evidenceModal.classList.remove('hidden');
+
+      const closeHandler = () => {
+        evidenceModal.classList.add('hidden');
+        modalConfirmBtn.removeEventListener('click', closeHandler);
+      };
+      modalConfirmBtn.addEventListener('click', closeHandler);
+    }
+
+    function showCopiedNotice() {
+      copyStatus.style.opacity = '1';
+      setTimeout(() => { copyStatus.style.opacity = '0'; }, 2000);
+    }
+
+    function resetGame() {
+      appState = {
+        currentActIndex: 0,
+        juryBalance: 0,
+        strikes: 0,
+        soundEnabled: appState.soundEnabled,
+        selectedStrategyId: null,
+        activeOutcome: null,
+        unlockedEvidenceIds: [],
+        collectedBadges: [],
+        collectedParagraphs: [],
+        witnessInspectFound: { pant: false, throat: false, eyes: false },
+        witnessInspectComplete: false,
+        isGameOver: false,
+        isVictorious: false
+      };
+
+      articleLockHint.className = "p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-500 text-center font-medium";
+      articleLockHint.innerHTML = "🔒 完整 5** 篇章將在全案無罪開釋時解鎖";
+      articleLockHint.onclick = null;
+
+      updateStatusDisplay();
+      renderEvidenceList();
+      renderBadgesAndSnippets();
+      loadCurrentAct();
+    }
+
+    // 頁面載入完成後啟動
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
